@@ -102,6 +102,37 @@ def save_pipeline_result(
 
     return run_id
 
+def save_failed_pipeline_run(
+    requirement_text: str,
+    error_message: str,
+    business_requirement_id: str = "BR-001",
+) -> str:
+    """
+    Save a failed pipeline attempt, so it shows up in History with
+    the requirement text and the error that stopped it.
+    """
+
+    _ensure_storage_dir()
+
+    run_id = _make_run_id()
+
+    file_path = STORAGE_DIR / f"{run_id}.json"
+
+    data = {
+        "run_id": run_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "status": "failed",
+        "error": error_message,
+        "business_requirement": {
+            "id": business_requirement_id,
+            "text": requirement_text,
+        },
+    }
+
+    with file_path.open("w", encoding="utf-8") as file:
+        json.dump(data, file, indent=2, ensure_ascii=False)
+
+    return run_id
 
 def load_pipeline_result(
     run_id: str,
@@ -163,6 +194,9 @@ def list_pipeline_runs() -> list[dict[str, Any]]:
                         "text",
                         "",
                     ),
+
+                    "status": data.get("status", "success"),
+                    "error": data.get("error"),
                 }
             )
 

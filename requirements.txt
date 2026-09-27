@@ -1,1 +1,16 @@
+# --- LLM client -------------------------------------------------------
+groq>=1.0.0            # used in app/services/*.py -- client.chat.completions.create(..., response_format={"type": "json_schema", ...})
+
+# --- structured data models --------------------------------------------
+pydantic>=2.0,<3.0      # app/models/*.py use pydantic v2 (BaseModel, Field, .model_dump())
+
+# --- web UI -------------------------------------------------------------
+streamlit>=1.31.0       # ui/views/*.py use st.columns(..., gap=...), st.tabs, st.dialog-style flows
+
+# --- file handling --------------------------------------------------
+pypdf>=4.0.0            # ui/views/new_requirement.py -- PdfReader() for PDF requirement uploads
+pandas>=2.0.0           # ui/views/export.py, ui/views/traceability.py -- CSV export + traceability table
+
+# --- config ---------------------------------------------------------
+python-dotenv>=1.0.0    # app/services/*.py -- load_dotenv() to read GROQ_API_KEY from .env
 

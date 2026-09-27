@@ -10,6 +10,7 @@ NAV = [
     ("Artifacts", ":material/inventory_2:", True),
     ("Traceability", ":material/account_tree:", True),
     ("Export", ":material/download:", True),
+    ("History", ":material/history:", False),
 ]
 
 

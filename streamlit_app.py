@@ -16,12 +16,13 @@ from ui.shell import render_header, render_nav
 from ui.views import artifacts as artifacts_view
 from ui.views import export as export_view
 from ui.views import generating as generating_view
+from ui.views import history as history_view
 from ui.views import new_requirement as new_requirement_view
 from ui.views import traceability as traceability_view
 
 from app.pipeline import run_pipeline
 from app.bundle_adapter import build_bundle_from_pipeline
-from app.storage.file_storage import save_pipeline_result
+from app.storage.file_storage import save_pipeline_result, save_failed_pipeline_run
 
 
 PAGES = {
@@ -41,6 +42,10 @@ PAGES = {
     "Export": (
         "Export",
         "Download all artifacts with their IDs and parent references.",
+    ),
+    "History": (
+        "History",
+        "Reload or delete artifacts generated in a previous run.",
     ),
 }
 
@@ -142,6 +147,12 @@ def _run_generation() -> None:
             st.session_state.run_id = run_id
 
         except Exception as exc:
+
+            save_failed_pipeline_run(
+                requirement,
+                str(exc),
+                business_requirement_id="BR-001",
+            )
 
             st.session_state.error = (
                 f"Generation failed: {exc}"
@@ -313,7 +324,20 @@ def main() -> None:
         export_view.render(
             bundle
         )
+    # ========================================================
+    # HISTORY
+    # ========================================================
 
+    elif page == "History":
+
+        title, subtitle = PAGES[page]
+
+        render_header(
+            title,
+            subtitle,
+        )
+
+        history_view.render()
 
 # ============================================================
 # APPLICATION ENTRY POINT
